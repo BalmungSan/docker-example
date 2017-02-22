@@ -1,0 +1,58 @@
+# Copyright 2017 Luis Miguel Mejía Suárez (BalmungSan)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Multiple Environment config, set this to development, staging or production
+SetEnv FUEL_ENV development
+
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+
+    # Make sure directory listing is disabled
+	Options +FollowSymLinks -Indexes
+
+    # make HTTP Basic Authentication work on php-fcgi installs
+    <IfModule mod_fcgid.c>
+        RewriteCond %{HTTP:Authorization} .
+        RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    </IfModule>
+
+	# Send request via index.php if not a real file or directory
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+
+	# deal with php-fcgi first
+	<IfModule mod_fcgid.c>
+        RewriteRule ^(.*)$ index.php?/$1 [QSA,L]
+	</IfModule>
+
+	# no php-fcgi, check for sapi and fpm
+	<IfModule !mod_fcgid.c>
+		# for PHP5 sapi installations
+		<IfModule mod_php5.c>
+			RewriteRule ^(.*)$ index.php/$1 [L]
+		</IfModule>
+
+		<IfModule !mod_php5.c>
+			# for PHP7 sapi installations
+			<IfModule mod_php7.c>
+				RewriteRule ^(.*)$ index.php/$1 [L]
+			</IfModule>
+
+			# for fpm installations
+			<IfModule !mod_php7.c>
+				RewriteRule ^(.*)$ index.php?/$1 [QSA,L]
+			</IfModule>
+		</IfModule>
+	</IfModule>
+</IfModule>

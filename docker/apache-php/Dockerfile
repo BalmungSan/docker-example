@@ -31,13 +31,12 @@ RUN a2enmod rewrite
 #Adding fuelphp framework
 RUN wget http://fuelphp.com/files/download/36
 RUN unzip 36 -d /var/www/
-RUN mv /var/www/fuelphp-1.8 /var/www/bookstore
-RUN rm -rf 36
+RUN mkdir /var/www/bookstore
+RUN cp -rf /var/www/fuelphp-1.8/* /var/www/bookstore/
 
 #Adding bookstore application
-RUN git clone https://github.com/BalmungSan/bookstore.git
-RUN cp -rf bookstore/bookstore/* /var/www/bookstore
-RUN rm -rf bookstore
+RUN git clone https://github.com/BalmungSan/docker-example.git
+RUN cp -rf docker-example/bookstore/* /var/www/bookstore
 
 #Giving ownership of application files to the apache user
 RUN chown -R www-data:www-data /var/www/bookstore

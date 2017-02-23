@@ -15,7 +15,7 @@ To deploy the app using docker simply go to the docker folder in this repo and t
 	$ docker build -t [apache-php image name] ./apache-php/
 	$ docker run -e MYSQL_ROOT_PASSWORD=[mysql root password] -v [local mysql folder]:/var/lib/mysql --name [mysql container name] -d [mysql image name]
 	
-	//wait a momment for the mysql container to start
+	//wait a momment for the mysql container to start (about 30 seconds at least)
 	
 	$ docker exec -it [mysql container name] /home/bookstore/initdb.sh
 	$ export MYSQL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' [mysql container name]`
@@ -37,7 +37,7 @@ To deploy the app using docker simply go to the docker folder in this repo and t
 	docker build -t user1-apache ./apache-php/
 	docker run -e MYSQL_ROOT_PASSWORD=1234 -v /home/lmejias3/data/mysql2:/var/lib/mysql --name mysql-test -d user1-mysql
 	
-	//wait a momment for the mysql container to start
+	//wait a momment for the mysql container to start (about 30 seconds at least)
 	
 	docker exec -it mysql-test /home/bookstore/initdb.sh
 	export MYSQL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql-test`
